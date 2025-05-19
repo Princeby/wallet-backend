@@ -4,7 +4,11 @@
   "description": "Backend API for managing users and their wallets",
   "main": "dist/server.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "node src/server.ts",
+=======
+    "start": "node dist/server.js",
+>>>>>>> parent of b42b263 (updated package.json)
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "migrate": "ts-node src/scripts/run-migration.ts",
     "build": "tsc",
