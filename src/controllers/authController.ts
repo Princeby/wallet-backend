@@ -65,35 +65,37 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
         res.status(401).json({ message: 'Authentication required' });
         return;
       }
-
+  
       const token = authHeader.split(' ')[1];
-      const userId = req.user?.userId;
-
+      
+      // Verify and decode the token to get the user ID and expiration time
+      const decoded = jwt.verify(token, config.jwtSecret) as jwt.JwtPayload;
+      
+      // Get userId either from req.user (set by middleware) or directly from decoded token
+      const userId = req.user?.userId || decoded.userId;
+      
       if (!userId) {
         res.status(401).json({ message: 'Invalid authentication' });
         return;
       }
-
-      // Verify and decode the token to get its expiration time
-      const decoded = jwt.verify(token, config.jwtSecret) as jwt.JwtPayload;
       
       // Calculate expiration date from token
       const expiresAt = new Date(decoded.exp! * 1000); // Convert from seconds to milliseconds
-
+  
       // Check if token is already blacklisted
       const isBlacklisted = await BlacklistedToken.isTokenBlacklisted(token);
       if (isBlacklisted) {
         res.status(400).json({ message: 'Token already invalidated' });
         return;
       }
-
+  
       // Add token to blacklist
       await BlacklistedToken.create({
         token,
         userId,
         expiresAt
       });
-
+  
       res.status(200).json({ message: 'Signed out successfully' });
     } catch (error) {
       console.error('Sign out error:', error);
@@ -107,6 +109,7 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+  
 
 
 export const register = async (req: Request, res: Response): Promise<void> => {

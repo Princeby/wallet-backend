@@ -2,12 +2,7 @@ import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/env';
 import { AuthRequest } from '../types/express';
-import  BlacklistedToken  from '../models/blacklistedToken';
-
-interface JwtPayload {
-  userId: number;
-  email: string;
-}
+import BlacklistedToken from '../models/blacklistedToken';
 
 export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -27,11 +22,19 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
       return;
     }
     
-    // Verify token
-    const decoded = jwt.verify(token, config.jwtSecret) as JwtPayload;
-        
-    // Attach user info to request
-    req.user = decoded;
+    // Verify token - don't specify the expected payload structure
+    const decoded = jwt.verify(token, config.jwtSecret);
+    
+    // Ensure decoded is an object before proceeding
+    if (typeof decoded !== 'object' || decoded === null) {
+      throw new Error('Invalid token payload');
+    }
+    
+    // Attach user info to request - this is key!
+    req.user = {
+      userId: (decoded as any).userId,
+      email: (decoded as any).email
+    };
     
     next();
   } catch (error) {
