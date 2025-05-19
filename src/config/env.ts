@@ -4,8 +4,8 @@ dotenv.config();
 
 export const config = {
   port: process.env.PORT || 3000,
-  jwtSecret: (process.env.JWT_SECRET) as string,
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN,
+  jwtSecret: (process.env.JWT_SECRET) as string || 'default-secret',
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1hr',
   dbConfig: {
     database: process.env.DB_NAME,
     username: process.env.DB_USER,

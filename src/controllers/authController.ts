@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { User, BlacklistedToken } from '../models';
-import jwt from 'jsonwebtoken';
+import jwt, {SignOptions} from 'jsonwebtoken';
 import { config } from '../config/env';
 import { AuthRequest } from '../types/express';
 
@@ -30,10 +30,10 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
 
     // Generate JWT token
     const token = jwt.sign(
-        { userId: user.id, email: user.email },
-        config.jwtSecret.toString(),
-        { expiresIn: config.jwtExpiresIn }
-      );
+      { userId: user.id, email: user.email },
+      config.jwtSecret as string,
+      { expiresIn: config.jwtExpiresIn as string } as SignOptions
+    );
 
     // Send response
     res.status(200).json({
@@ -134,10 +134,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     // Generate JWT token
     const token = jwt.sign(
-        { userId: user.id, email: user.email },
-        config.jwtSecret.toString(),
-        { expiresIn: config.jwtExpiresIn }
-        );
+      { userId: user.id, email: user.email },
+      config.jwtSecret as string, // ensure it's a string
+      { expiresIn: config.jwtExpiresIn as string } as SignOptions
+    );
 
     // Send response
     res.status(201).json({
