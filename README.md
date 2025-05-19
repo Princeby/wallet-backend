@@ -22,7 +22,7 @@ A backend API for managing users and their cryptocurrency wallets built with **E
 
 ```bash
 git clone https://github.com/Princeby/wallet-backend.git
-cd wallet-api
+cd wallet-backend
 ```
 
 ### Install dependencies:
