@@ -24,7 +24,7 @@ A backend API for managing users and their cryptocurrency wallets built with **E
 
 ## 🐘 PostgreSQL Setup
 
-### ✅ If You Already Have PostgreSQL Installed
+### If You Already Have PostgreSQL Installed
 
 1. Make sure PostgreSQL is running.
 2. Create the database:
@@ -37,7 +37,7 @@ A backend API for managing users and their cryptocurrency wallets built with **E
 
 ---
 
-### ❌ If You Don't Have PostgreSQL Installed
+### If You Don't Have PostgreSQL Installed
 
 #### macOS
 
@@ -93,15 +93,14 @@ npm install
 Create a `.env` file in the root directory:
 
 ```env
-PORT=5000
-DATABASE_URL=postgresql://<user>:<password>@localhost:5432/wallet_db
-JWT_SECRET=your_jwt_secret
-```
-
-**Example:**
-
-```env
-DATABASE_URL=postgresql://postgres:mysecretpassword@localhost:5432/wallet_db
+PORT=3000
+JWT_SECRET=your_secret_key
+JWT_EXPIRES_IN=1h
+DB_NAME=wallet_db
+DB_USER=your_db_username
+DB_PASSWORD=your_db_password
+DB_HOST=localhost
+DB_PORT=5432
 ```
 
 ---
