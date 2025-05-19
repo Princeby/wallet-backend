@@ -45,12 +45,6 @@ createdb wallet_db
 npm run dev
 ```
 
-### Production Mode
-
-```bash
-npm run build
-npm start
-```
 
 ## Project Structure
 
