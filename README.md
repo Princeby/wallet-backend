@@ -56,6 +56,28 @@ createdb wallet_db
 2. Set a password during installation.
 3. After installation:
     - Open **SQL Shell (psql)**.
+  🛠 Step 1: Open the PostgreSQL Shell (psql)
+  On Windows, search for “SQL Shell (psql)” in the Start menu.
+
+  On macOS/Linux, open your terminal and type:
+
+  bash
+  Copy
+  Edit
+  psql -U postgres
+  When prompted for information:
+
+  Prompt	Suggested Response
+  Server	Press Enter (defaults to localhost)
+  Database	Press Enter (defaults to postgres)
+  Port	Press Enter (defaults to 5432)
+  Username	Type postgres (default superuser)
+  Password	Enter the password you set during installation
+
+  💡 If you don't remember setting a password, try leaving it blank or reinstall PostgreSQL and set one.
+
+🧱 Step 2: Create a New Database
+Once you're inside the shell (postgres=#), run:
     - Run:
       ```sql
       CREATE DATABASE wallet_db;
