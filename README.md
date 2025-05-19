@@ -2,7 +2,9 @@
 
 A backend API for managing users and their cryptocurrency wallets built with **Express.js**, **TypeScript**, and **PostgreSQL**.
 
-## Features
+---
+
+## ✨ Features
 
 - User authentication (register, sign-in, sign-out)
 - Wallet management (CRUD operations)
@@ -10,34 +12,101 @@ A backend API for managing users and their cryptocurrency wallets built with **E
 - PostgreSQL database storage
 - TypeScript for type safety
 
-## Prerequisites
+---
+
+## 🛠️ Prerequisites
 
 - Node.js (v14 or higher)
-- PostgreSQL database
 - npm or yarn
+- PostgreSQL (see setup instructions below)
 
-## Installation
+---
 
-### Clone the repository:
+## 🐘 PostgreSQL Setup
+
+### ✅ If You Already Have PostgreSQL Installed
+
+1. Make sure PostgreSQL is running.
+2. Create the database:
+
+    ```bash
+    createdb wallet_db
+    ```
+
+3. Update your `.env` file with the database credentials.
+
+---
+
+### ❌ If You Don't Have PostgreSQL Installed
+
+#### macOS
+
+Install PostgreSQL using Homebrew:
+
+```bash
+brew install postgresql
+brew services start postgresql
+createdb wallet_db
+```
+
+#### Windows
+
+1. Download and install from:  
+   [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/)
+2. Set a password during installation.
+3. After installation:
+    - Open **SQL Shell (psql)**.
+    - Run:
+      ```sql
+      CREATE DATABASE wallet_db;
+      ```
+
+#### Ubuntu / Linux
+
+```bash
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+sudo -u postgres createdb wallet_db
+```
+
+---
+
+## 📦 Installation
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Princeby/wallet-backend.git
 cd wallet-backend
 ```
 
-### Install dependencies:
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### Create the PostgreSQL database:
+---
 
-```bash
-createdb wallet_db
+## ⚙️ Environment Setup
+
+Create a `.env` file in the root directory:
+
+```env
+PORT=5000
+DATABASE_URL=postgresql://<user>:<password>@localhost:5432/wallet_db
+JWT_SECRET=your_jwt_secret
 ```
 
-## Running the Application
+**Example:**
+
+```env
+DATABASE_URL=postgresql://postgres:mysecretpassword@localhost:5432/wallet_db
+```
+
+---
+
+## 🚀 Running the Application
 
 ### Development Mode
 
@@ -45,32 +114,19 @@ createdb wallet_db
 npm run dev
 ```
 
+---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 wallet-api/
 ├── src/
 │   ├── config/
-│   │   ├── database.ts
-│   │   └── env.ts
 │   ├── controllers/
-│   │   ├── authController.ts
-│   │   └── walletController.ts
 │   ├── middleware/
-│   │   ├── auth.ts
-│   │   └── validation.ts
 │   ├── models/
-│   │   ├── index.ts
-│   │   ├── User.ts
-│   │   ├── Wallet.ts
-│   │   └── Chain.ts
 │   ├── routes/
-│   │   ├── auth.ts
-│   │   ├── wallet.ts
-│   │   └── index.ts
 │   ├── types/
-│   │   └── express.d.ts
 │   ├── app.ts
 │   └── server.ts
 ├── .env
@@ -78,137 +134,55 @@ wallet-api/
 └── tsconfig.json
 ```
 
-## API Endpoints
+---
 
-### Authentication
+## 📡 API Endpoints
 
-#### `POST /api/auth/register` – Register a new user
+### 🔐 Authentication
 
-- **Request Body:**
-  ```json
-  {
-    "email": "string",
-    "password": "string"
-  }
-  ```
-- **Response:** User object with JWT token
+- `POST /api/auth/register` – Register a new user  
+- `POST /api/auth/signin` – Sign in a user  
+- `POST /api/auth/signout` – Sign out a user
 
 ---
 
-#### `POST /api/auth/signin` – Sign in a user
+### 👛 Wallets
 
-- **Request Body:**
-  ```json
-  {
-    "email": "string",
-    "password": "string"
-  }
-  ```
-- **Response:** User object with JWT token
+- `GET /api/wallets` – Get all wallets  
+- `POST /api/wallets` – Create a new wallet  
+- `GET /api/wallets/:id` – Get a wallet by ID  
+- `PUT /api/wallets/:id` – Update a wallet  
+- `DELETE /api/wallets/:id` – Delete a wallet
 
 ---
 
-#### `POST /api/auth/signout` – Sign out a user
-
-- **Request Header:**
-  ```
-  Authorization: Bearer <token>
-  ```
-- **Response:** Success message
-
----
-
-### Wallets
-
-#### `GET /api/wallets` – Get all wallets for the authenticated user
-
-- **Request Header:**
-  ```
-  Authorization: Bearer <token>
-  ```
-- **Response:** Array of wallet objects
-
----
-
-#### `POST /api/wallets` – Create a new wallet
-
-- **Request Header:**
-  ```
-  Authorization: Bearer <token>
-  ```
-- **Request Body:**
-  ```json
-  {
-    "tag": "optional string",
-    "chain": "string",
-    "address": "string"
-  }
-  ```
-- **Response:** Wallet object
-
----
-
-#### `GET /api/wallets/:id` – Get a specific wallet by ID
-
-- **Request Header:**
-  ```
-  Authorization: Bearer <token>
-  ```
-- **Response:** Wallet object
-
----
-
-#### `PUT /api/wallets/:id` – Update a wallet
-
-- **Request Header:**
-  ```
-  Authorization: Bearer <token>
-  ```
-- **Request Body:**
-  ```json
-  {
-    "tag": "optional string",
-    "chain": "optional string",
-    "address": "optional string"
-  }
-  ```
-- **Response:** Updated wallet object
-
----
-
-#### `DELETE /api/wallets/:id` – Delete a wallet
-
-- **Request Header:**
-  ```
-  Authorization: Bearer <token>
-  ```
-- **Response:** Success message
-
----
-
-## Error Handling
-
-The API returns appropriate HTTP status codes:
+## ⚠️ Error Handling
 
 - `200` – Success  
-- `201` – Created successfully  
-- `400` – Bad request (invalid input)  
-- `401` – Unauthorized (invalid or missing token)  
-- `404` – Resource not found  
-- `409` – Conflict (resource already exists)  
+- `201` – Created  
+- `400` – Bad request  
+- `401` – Unauthorized  
+- `404` – Not found  
+- `409` – Conflict  
 - `500` – Server error  
 
-## Security
+---
 
-- Passwords are hashed using **bcrypt**
-- Authentication is handled with **JWT tokens**
-- Input validation for all API endpoints
-- Uses **Helmet** middleware for enhanced security headers
+## 🔐 Security
 
-## API Testing
+- Passwords hashed using **bcrypt**
+- Authentication via **JWT tokens**
+- Input validation and **Helmet** middleware for HTTP security
 
-Use **Postman** or any API testing tool. A sample Postman collection is included in the repository.
+---
 
-## License
+## 🧪 API Testing
+
+Use **Postman** or any API testing tool.  
+A sample Postman collection is included in the repository.
+
+---
+
+## 📄 License
 
 MIT
