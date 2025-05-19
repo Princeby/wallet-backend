@@ -1,6 +1,7 @@
 
 import User from './User';
 import Wallet from './Wallet';
+import BlacklistedToken from './blacklistedToken';
 import setupAssociations from './associations';
 
 setupAssociations();
@@ -8,4 +9,5 @@ setupAssociations();
 export {
   User,
   Wallet,
+  BlacklistedToken
 };

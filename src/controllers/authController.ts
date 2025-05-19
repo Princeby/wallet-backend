@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { User } from '../models';
+import { User, BlacklistedToken } from '../models';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/env';
+import { AuthRequest } from '../types/express';
 
 export const signin = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -49,12 +50,64 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const signout = (req: Request, res: Response): void => {
-  // JWT is stateless, so we just return success
-  // In a real app, you might want to invalidate the token on the client side
-  // or store it in a blacklist
-  res.status(200).json({ message: 'Signed out successfully' });
-};
+
+  /**
+   * Sign out a user by blacklisting their JWT token
+   * @route POST /signout
+   * @param req - Express request object with user and token from auth middleware
+   * @param res - Express response object
+   */
+  export const signout = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      // Get the token from the authorization header
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        res.status(401).json({ message: 'Authentication required' });
+        return;
+      }
+
+      const token = authHeader.split(' ')[1];
+      const userId = req.user?.userId;
+
+      if (!userId) {
+        res.status(401).json({ message: 'Invalid authentication' });
+        return;
+      }
+
+      // Verify and decode the token to get its expiration time
+      const decoded = jwt.verify(token, config.jwtSecret) as jwt.JwtPayload;
+      
+      // Calculate expiration date from token
+      const expiresAt = new Date(decoded.exp! * 1000); // Convert from seconds to milliseconds
+
+      // Check if token is already blacklisted
+      const isBlacklisted = await BlacklistedToken.isTokenBlacklisted(token);
+      if (isBlacklisted) {
+        res.status(400).json({ message: 'Token already invalidated' });
+        return;
+      }
+
+      // Add token to blacklist
+      await BlacklistedToken.create({
+        token,
+        userId,
+        expiresAt
+      });
+
+      res.status(200).json({ message: 'Signed out successfully' });
+    } catch (error) {
+      console.error('Sign out error:', error);
+      
+      // Handle jwt verification errors specifically
+      if (error instanceof jwt.JsonWebTokenError) {
+        res.status(401).json({ message: 'Invalid token' });
+        return;
+      }
+      
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
