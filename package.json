@@ -4,7 +4,7 @@
   "description": "Backend API for managing users and their wallets",
   "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "node src/server.ts",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "migrate": "ts-node src/scripts/run-migration.ts",
     "build": "tsc",
